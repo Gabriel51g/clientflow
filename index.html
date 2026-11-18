@@ -1,0 +1,335 @@
+
+
+<!DOCTYPE html>
+
+<html lang="fr">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>ClientFlow - Gestion d'entreprise</title>
+
+<style>
+
+*{box-sizing:border-box}
+
+body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#17243a}
+
+header{background:#142b50;color:white;padding:18px 22px;display:flex;justify-content:space-between;align-items:center}
+
+.logo{font-size:23px;font-weight:bold}
+
+.logo span{color:#54c7f2}
+
+header small{color:#c8d7eb}
+
+.layout{display:flex;min-height:calc(100vh - 65px)}
+
+nav{width:220px;background:#fff;padding:22px 12px;border-right:1px solid #e5eaf1}
+
+nav button{width:100%;text-align:left;padding:14px;border:0;background:white;border-radius:8px;margin-bottom:7px;color:#42536b;font-size:15px;cursor:pointer}
+
+nav button.active,nav button:hover{background:#eaf3ff;color:#1769d2}
+
+main{padding:25px;width:100%;max-width:1200px;margin:auto}
+
+h1{font-size:26px;margin-top:0}
+
+.muted{color:#77869b}
+
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin:22px 0}
+
+.card{background:white;padding:20px;border-radius:12px;border:1px solid #e7edf4}
+
+.card strong{font-size:25px;display:block;margin-top:12px}
+
+.panel{background:white;border:1px solid #e7edf4;border-radius:12px;padding:20px;margin-top:20px}
+
+.panel h2{font-size:18px}
+
+button.primary{background:#1769d2;color:white;border:0;padding:12px 16px;border-radius:8px;cursor:pointer}
+
+input{padding:12px;border:1px solid #dce3ed;border-radius:8px;width:100%;margin:7px 0}
+
+table{width:100%;border-collapse:collapse;margin-top:15px}
+
+th,td{text-align:left;padding:13px 8px;border-bottom:1px solid #edf0f5;font-size:14px}
+
+th{color:#75849a}
+
+.form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.hidden{display:none}
+
+@media(max-width:650px){
+
+.layout{display:block}
+
+nav{width:100%;display:flex;overflow-x:auto;padding:8px}
+
+nav button{min-width:max-content;width:auto;margin:0 4px;padding:12px}
+
+main{padding:17px}
+
+.cards{grid-template-columns:1fr}
+
+.form{grid-template-columns:1fr}
+
+table{min-width:450px}
+
+.panel{overflow-x:auto}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">Client<span>Flow</span></div>
+
+<small>Business Management</small>
+
+</header>
+
+<div class="layout">
+
+<nav>
+
+<button class="active" onclick="showPage('dashboard',this)">🏠 Tableau de bord</button>
+
+<button onclick="showPage('clients',this)">👥 Clients</button>
+
+<button onclick="showPage('products',this)">📦 Produits</button>
+
+<button onclick="showPage('sales',this)">💰 Ventes</button>
+
+</nav>
+
+<main>
+
+<section id="dashboard">
+
+<h1>Tableau de bord</h1>
+
+<p class="muted">Bienvenue sur ClientFlow ! Gérez votre entreprise facilement.</p>
+
+<div class="cards">
+
+<div class="card">Total clients<strong id="clientCount">0</strong></div>
+
+<div class="card">Produits<strong id="productCount">0</strong></div>
+
+<div class="card">Ventes<strong id="saleCount">0</strong></div>
+
+</div>
+
+<div class="panel">
+
+<h2>Bienvenue dans votre espace de gestion</h2>
+
+<p class="muted">Gérez vos clients, produits et ventes depuis un seul endroit.</p>
+
+</div>
+
+</section>
+
+<section id="clients" class="hidden">
+
+<h1>Gestion des clients</h1>
+
+<div class="panel">
+
+<h2>Ajouter un client</h2>
+
+<input id="clientName" placeholder="Nom du client">
+
+<input id="clientPhone" placeholder="Téléphone">
+
+<input id="clientEmail" placeholder="E-mail">
+
+<button class="primary" onclick="addClient()">+ Ajouter le client</button>
+
+<p id="clientNotice"></p>
+
+</div>
+
+<div class="panel">
+
+<h2>Liste des clients</h2>
+
+<table><thead><tr><th>Nom</th><th>Téléphone</th><th>E-mail</th></tr></thead><tbody id="clientList"></tbody></table>
+
+</div>
+
+</section>
+
+<section id="products" class="hidden">
+
+<h1>Gestion des produits</h1>
+
+<div class="panel">
+
+<h2>Ajouter un produit</h2>
+
+<input id="productName" placeholder="Nom du produit">
+
+<input id="productPrice" type="number" min="0" placeholder="Prix en FCFA">
+
+<input id="productStock" type="number" min="0" placeholder="Quantité en stock">
+
+<button class="primary" onclick="addProduct()">+ Ajouter le produit</button>
+
+<p id="productNotice"></p>
+
+</div>
+
+<div class="panel">
+
+<h2>Liste des produits</h2>
+
+<table><thead><tr><th>Produit</th><th>Prix</th><th>Stock</th></tr></thead><tbody id="productList"></tbody></table>
+
+</div>
+
+</section>
+
+<section id="sales" class="hidden">
+
+<h1>Suivi des ventes</h1>
+
+<div class="panel">
+
+<h2>Nouvelle vente</h2>
+
+<input id="saleName" placeholder="Nom du produit vendu">
+
+<input id="saleAmount" type="number" min="0" placeholder="Montant en FCFA">
+
+<button class="primary" onclick="addSale()">+ Enregistrer la vente</button>
+
+<p id="saleNotice"></p>
+
+</div>
+
+<div class="panel">
+
+<h2>Historique des ventes</h2>
+
+<table><thead><tr><th>Produit</th><th>Montant</th><th>Date</th></tr></thead><tbody id="saleList"></tbody></table>
+
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+<script>
+
+let clients=[],products=[],sales=[];
+
+function escapeHTML(value){
+
+return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+}
+
+function showPage(id,btn){
+
+document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));
+
+document.getElementById(id).classList.remove('hidden');
+
+document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+
+btn.classList.add('active');
+
+}
+
+function updateCounts(){
+
+document.getElementById('clientCount').textContent=clients.length;
+
+document.getElementById('productCount').textContent=products.length;
+
+document.getElementById('saleCount').textContent=sales.length;
+
+}
+
+function addClient(){
+
+let name=document.getElementById('clientName').value.trim();
+
+let phone=document.getElementById('clientPhone').value.trim();
+
+let email=document.getElementById('clientEmail').value.trim();
+
+if(!name){document.getElementById('clientNotice').textContent='Entrez un nom.';return}
+
+clients.push({name,phone,email});
+
+document.getElementById('clientList').innerHTML=clients.map(c=>`<tr><td>${escapeHTML(c.name)}</td><td>${escapeHTML(c.phone)}</td><td>${escapeHTML(c.email)}</td></tr>`).join('');
+
+document.getElementById('clientName').value='';
+
+document.getElementById('clientPhone').value='';
+
+document.getElementById('clientEmail').value='';
+
+document.getElementById('clientNotice').textContent='Client ajouté !';
+
+updateCounts();
+
+}
+
+function addProduct(){
+
+let name=document.getElementById('productName').value.trim();
+
+let price=Number(document.getElementById('productPrice').value);
+
+let stock=Number(document.getElementById('productStock').value);
+
+if(!name||document.getElementById('productPrice').value===''||price<0||!Number.isFinite(price)){document.getElementById('productNotice').textContent='Vérifiez le nom et le prix.';return}
+
+products.push({name,price,stock});
+
+document.getElementById('productList').innerHTML=products.map(p=>`<tr><td>${escapeHTML(p.name)}</td><td>${p.price.toLocaleString('fr-FR')} FCFA</td><td>${p.stock}</td></tr>`).join('');
+
+document.getElementById('productName').value='';
+
+document.getElementById('productPrice').value='';
+
+document.getElementById('productStock').value='';
+
+document.getElementById('productNotice').textContent='Produit ajouté !';
+
+updateCounts();
+
+}
+
+function addSale(){
+
+let name=document.getElementById('saleName').value.trim();
+
+let amount=Number(document.getElementById('saleAmount').value);
+
+if(!name||document.getElementById('saleAmount').value===''||amount<=0||!Number.isFinite(amount)){document.getElementById('saleNotice').textContent='Entrez un produit et un montant valide.';return}
+
+sales.push({name,amount,date:new Date().toLocaleDateString('fr-FR')});
+
+document.getElementById('saleList').innerHTML=sales.map(s=>`<tr><td>${escapeHTML(s.name)}</td><td>${s.amount.toLocaleString('fr-FR')} FCFA</td><td>${s.date}</td></tr>`).join('');
+
+document.getElementById('saleName').value='';
+
+document.getElementById('saleAmount').value='';
+
+document.getElementById('saleNotice').textContent='Vente enregistrée !';
